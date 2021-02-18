@@ -23,7 +23,7 @@ class ProductsScreen extends StatelessWidget {
           childAspectRatio: 3 / 2,
           //espacamento no eixo cruzado
           crossAxisSpacing: 10,
-          //espacmento no main
+          //espacamento no main
           mainAxisSpacing: 10,
         ),
       ),
