@@ -53,8 +53,7 @@ final DUMMY_PRODUCTS = [
     title: 'Coat',
     description: 'Prepare any meal you want.',
     price: 59.99,
-    imageUrl:
-        'https://cdn.shopify.com/s/files/1/2696/5846/products/72-10-49310-029_3_8195bfac-4872-4c8c-b550-be7718e031f6_2000x.jpg?v=1609160182',
+    imageUrl: 'https://cdn-cosmos.bluesoft.com.br/products/826218177057',
   ),
   Product(
     id: 'p8',

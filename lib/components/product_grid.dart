@@ -11,8 +11,8 @@ class ProductGrid extends StatelessWidget {
     return GridView.builder(
       itemCount: products.length,
       padding: EdgeInsets.all(10),
-      itemBuilder: (cxt, i) => ChangeNotifierProvider(
-        create:(ctx)=> products[i] ,
+      itemBuilder: (cxt, i) => ChangeNotifierProvider.value(
+        value: products[i],
         child: ProductItem(),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
