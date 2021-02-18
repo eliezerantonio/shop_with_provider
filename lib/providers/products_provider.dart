@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:gerencimento_estado/data/dummy_data.dart';
-import 'package:gerencimento_estado/models/products.dart';
+import 'package:gerencimento_estado/providers/products.dart';
 
 class ProductsProvider with ChangeNotifier {
   List<Product> _items = DUMMY_PRODUCTS;
