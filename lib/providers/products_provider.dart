@@ -7,7 +7,21 @@ class ProductsProvider with ChangeNotifier {
 
 // retornando uma copia com o Spread
   List<Product> get items => [..._items];
+  List<Product> get favoriteItems {
+    return _items.where((prod) => prod.isFavorite).toList();
+  }
 
+  /*
+  bool _showFavoriteOnly = false;
+  void showFavoriteOnly() {
+    _showFavoriteOnly = true;
+    notifyListeners();
+  }
+  void showAll(){
+    _showFavoriteOnly-false;
+    notifyListeners();
+  }
+*/
   void addProduct(Product product) {
     _items.add(product);
     notifyListeners();
