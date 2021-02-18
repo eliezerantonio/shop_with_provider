@@ -1,24 +1,29 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:gerencimento_estado/data/dummy_data.dart';
+import 'package:gerencimento_estado/providers/product.dart';
 
-class Product with ChangeNotifier {
-  final String id;
-  final String title;
-  final String description;
-  final double price;
-  final String imageUrl;
-  bool isFavorite;
+class Products with ChangeNotifier {
+  List<Product> _items = DUMMY_PRODUCTS;
 
-  Product({
-    @required this.id,
-    @required this.title,
-    @required this.description,
-    @required this.imageUrl,
-    this.isFavorite = false,
-    @required this.price,
-  });
+// retornando uma copia com o Spread
+  List<Product> get items => [..._items];
+  List<Product> get favoriteItems {
+    return _items.where((prod) => prod.isFavorite).toList();
+  }
 
-  void toggleFavorite() {
-    isFavorite = !isFavorite;
+  /*
+  bool _showFavoriteOnly = false;
+  void showFavoriteOnly() {
+    _showFavoriteOnly = true;
+    notifyListeners();
+  }
+  void showAll(){
+    _showFavoriteOnly-false;
+    notifyListeners();
+  }
+*/
+  void addProduct(Product product) {
+    _items.add(product);
     notifyListeners();
   }
 }

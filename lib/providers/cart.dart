@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gerencimento_estado/providers/products.dart';
+import 'package:gerencimento_estado/providers/product.dart';
 
 class CartItem {
   final String id;

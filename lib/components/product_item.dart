@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gerencimento_estado/helpers/app_routes.dart';
-import 'package:gerencimento_estado/providers/products.dart';
+import 'package:gerencimento_estado/providers/product.dart';
 
 class ProductItem extends StatelessWidget {
   @override
