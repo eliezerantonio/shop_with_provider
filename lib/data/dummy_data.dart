@@ -32,4 +32,36 @@ final DUMMY_PRODUCTS = [
     imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
   ),
+  Product(
+    id: 'p5',
+    title: 'Tenis',
+    description: 'Prepare any meal you want.',
+    price: 59.99,
+    imageUrl:
+        'https://cdn.shopify.com/s/files/1/0337/0975/2451/products/1_13c38eb3-79e4-4288-bce0-685532a248cc_1800x1800.jpg?v=1589045076',
+  ),
+  Product(
+    id: 'p6',
+    title: 'Tenis',
+    description: 'Prepare any meal you want.',
+    price: 59.99,
+    imageUrl:
+        'https://cdn.shopify.com/s/files/1/2696/5846/products/72-10-49310-029_3_8195bfac-4872-4c8c-b550-be7718e031f6_2000x.jpg?v=1609160182',
+  ),
+  Product(
+    id: 'p7',
+    title: 'Coat',
+    description: 'Prepare any meal you want.',
+    price: 59.99,
+    imageUrl:
+        'https://cdn.shopify.com/s/files/1/2696/5846/products/72-10-49310-029_3_8195bfac-4872-4c8c-b550-be7718e031f6_2000x.jpg?v=1609160182',
+  ),
+  Product(
+    id: 'p8',
+    title: 'Macbook pro',
+    description: 'Prepare any meal you want.',
+    price: 59.99,
+    imageUrl:
+        'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16touch-space-select-201911?wid=892&hei=820&&qlt=80&.v=1572825197207',
+  ),
 ];

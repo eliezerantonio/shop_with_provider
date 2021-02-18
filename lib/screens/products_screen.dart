@@ -10,6 +10,7 @@ class ProductsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Shop"),
+        centerTitle: true,
       ),
       body: GridView.builder(
         itemCount: loadedProducts.length,
