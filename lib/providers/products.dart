@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:gerencimento_estado/data/dummy_data.dart';
-import 'package:gerencimento_estado/models/products.dart';
+import 'package:gerencimento_estado/providers/product.dart';
 
-class ProductsProvider with ChangeNotifier {
+class Products with ChangeNotifier {
   List<Product> _items = DUMMY_PRODUCTS;
 
 // retornando uma copia com o Spread
