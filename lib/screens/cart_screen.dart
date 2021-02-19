@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:gerencimento_estado/components/cart_item_Widget.dart';
 import 'package:gerencimento_estado/providers/cart.dart';
+import 'package:gerencimento_estado/providers/orders.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
@@ -41,7 +42,12 @@ class CartScreen extends StatelessWidget {
                   ),
                   Spacer(),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<Orders>().addOrder(
+                            cart
+                          );
+                      cart.clear();
+                    },
                     child: Text(
                       "COMPRAR",
                       style: TextStyle(
