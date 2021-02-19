@@ -52,7 +52,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           Consumer<Cart>(
             builder: (_, cart, __) {
               return Badge(
-                value: cart.itemCount.toString(),
+                value: cart.itemsCount.toString(),
                 child: IconButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(AppRoutes.CART);

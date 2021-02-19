@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:gerencimento_estado/components/cart_item_Widget.dart';
 import 'package:gerencimento_estado/providers/cart.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +9,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = context.watch<Cart>();
+    final cartItems = cart.items.values.toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('Carrinho'),
@@ -48,6 +50,13 @@ class CartScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ),
+          SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: cart.itemsCount,
+              itemBuilder: (context, i) => CartItemWidget(cartItems[i]),
             ),
           )
         ],
