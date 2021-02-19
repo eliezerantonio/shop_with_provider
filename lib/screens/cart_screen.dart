@@ -3,12 +3,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:gerencimento_estado/components/cart_item_Widget.dart';
 import 'package:gerencimento_estado/providers/cart.dart';
+import 'package:gerencimento_estado/providers/orders.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final cart = context.watch<Cart>();
+    final Cart cart = Provider.of(context);
     final cartItems = cart.items.values.toList();
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +42,11 @@ class CartScreen extends StatelessWidget {
                   ),
                   Spacer(),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                       Provider.of<Orders>(context, listen: false)
+                          .addOrder(cart);
+                      cart.clear();
+                    },
                     child: Text(
                       "COMPRAR",
                       style: TextStyle(
