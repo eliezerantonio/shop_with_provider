@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final cart = context.watch<Cart>();
+    final Cart cart = Provider.of(context);
     final cartItems = cart.items.values.toList();
     return Scaffold(
       appBar: AppBar(
@@ -43,9 +43,8 @@ class CartScreen extends StatelessWidget {
                   Spacer(),
                   FlatButton(
                     onPressed: () {
-                      context.read<Orders>().addOrder(
-                            cart
-                          );
+                       Provider.of<Orders>(context, listen: false)
+                          .addOrder(cart);
                       cart.clear();
                     },
                     child: Text(
