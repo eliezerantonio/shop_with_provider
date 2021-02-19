@@ -8,6 +8,8 @@ import 'package:gerencimento_estado/screens/product_detail_screen.dart';
 import 'package:gerencimento_estado/screens/products_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/orders.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -21,6 +23,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => Cart(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => Orders(),
+        )
       ],
       child: MaterialApp(
         title: 'Minha Loja',
