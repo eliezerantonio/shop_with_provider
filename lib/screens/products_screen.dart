@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gerencimento_estado/components/app_drawer.dart';
 import 'package:gerencimento_estado/components/badge.dart';
 import 'package:gerencimento_estado/helpers/app_routes.dart';
 import 'package:gerencimento_estado/providers/cart.dart';
@@ -21,6 +22,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text("My Shop"),
         centerTitle: true,
