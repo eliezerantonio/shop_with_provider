@@ -21,6 +21,29 @@ class CartItemWidget extends StatelessWidget {
         alignment: Alignment.centerRight,
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
       ),
+      confirmDismiss: (_) {
+        return showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text("Tem certeza?"),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: Text("Nao"),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: Text("SIm"),
+                  ),
+                ],
+              );
+            });
+      },
       onDismissed: (_) {
         context.read<Cart>().removeItem(cartItem.productId);
       },
