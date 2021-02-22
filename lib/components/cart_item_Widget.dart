@@ -22,7 +22,7 @@ class CartItemWidget extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
       ),
       onDismissed: (_) {
-        context.read()<Cart>().removeItem(cartItem.productId);
+        context.read<Cart>().removeItem(cartItem.productId);
       },
       direction: DismissDirection.endToStart,
       child: Card(
