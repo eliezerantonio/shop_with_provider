@@ -13,6 +13,27 @@ class ProductItem extends StatelessWidget {
       title: Text(
         product.title,
       ),
+      trailing: Container(
+        width: 100,
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.edit,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.delete,
+                color: Theme.of(context).errorColor,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
