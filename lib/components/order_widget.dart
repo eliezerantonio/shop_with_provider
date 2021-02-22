@@ -21,7 +21,8 @@ class _OrderWidgetState extends State<OrderWidget> {
         children: [
           ListTile(
             trailing: IconButton(
-              icon: Icon(Icons.expand_more),
+              icon:
+                  _expanded ? Icon(Icons.expand_more) : Icon(Icons.expand_less),
               onPressed: () {
                 setState(() {
                   _expanded = !_expanded;
