@@ -11,12 +11,12 @@ enum FilterOptions {
   All,
 }
 
-class ProductsScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  _ProductsScreenState createState() => _ProductsScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _ProductsScreenState extends State<ProductsScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   bool _showFavoriteOnly = false;
 
   @override
