@@ -14,6 +14,21 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       appBar: AppBar(
         title: Text("Formulario Produto"),
       ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          child: ListView(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: "Titulo",
+                ),
+                textInputAction: TextInputAction.next,
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
