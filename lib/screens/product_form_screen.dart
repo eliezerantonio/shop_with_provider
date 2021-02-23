@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 
 class ProductFormScreen extends StatefulWidget {
@@ -8,6 +10,7 @@ class ProductFormScreen extends StatefulWidget {
 }
 
 class _ProductFormScreenState extends State<ProductFormScreen> {
+  final _priceFocusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,8 +26,19 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 decoration: InputDecoration(
                   labelText: "Titulo",
                 ),
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_priceFocusNode);
+                },
                 textInputAction: TextInputAction.next,
-              )
+              ),
+              TextFormField(
+                focusNode: _priceFocusNode,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: "Preco",
+                ),
+                textInputAction: TextInputAction.next,
+              ),
             ],
           ),
         ),
