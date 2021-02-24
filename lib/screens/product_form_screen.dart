@@ -25,7 +25,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   void _updateImageUrl() {
-    setState(() {});
+    if (isValidImageUrl(_imageUrlController.text)) {
+      setState(() {});
+    }
   }
 
   @override
@@ -39,13 +41,25 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   void _saveForm() {
-    _form.currentState.save();
-    final newProduct = Product(
-        id: Random().nextDouble().toString(),
-        title: _formData['title'],
-        price: _formData['price'],
-        description: _formData['description'],
-        imageUrl: _formData['imageUrl']);
+    if (_form.currentState.validate()) {
+      _form.currentState.save();
+      final newProduct = Product(
+          id: Random().nextDouble().toString(),
+          title: _formData['title'],
+          price: _formData['price'],
+          description: _formData['description'],
+          imageUrl: _formData['imageUrl']);
+    }
+  }
+
+  bool isValidImageUrl(String url) {
+    bool startWithHttp = url.toLowerCase().startsWith('http://');
+    bool startWithHttps = url.toLowerCase().startsWith('https://');
+    bool endsWithPng = url.toLowerCase().endsWith('.png');
+    bool endsWithJpg = url.toLowerCase().endsWith('.jpg');
+    bool endsWithJpeg = url.toLowerCase().endsWith('.jpeg');
+    return (startWithHttps || startWithHttp) &&
+        (endsWithPng || endsWithJpg || endsWithJpeg);
   }
 
   @override
@@ -81,7 +95,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   if (value.trim().isEmpty) {
                     return 'Nao pode ser vazio';
                   }
-                  if(value.trim().length<=3){
+                  if (value.trim().length <= 3) {
                     return 'mo minimo deve ter 3 letras';
                   }
                   return null;
@@ -98,8 +112,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
                 onSaved: (value) => _formData['price'] = double.parse(value),
-                validator: (value){
-                  if(value.isEmpty){}
+                validator: (value) {
+                  bool isEmpty = value.trim().isEmpty;
+
+                  var newPrice = double.tryParse(value);
+                  bool isValid = newPrice == null || newPrice <= 0;
+
+                  if (isEmpty || isValid) {
+                    return 'Preco invalido';
+                  }
+                  return null;
                 },
               ),
               TextFormField(
@@ -111,6 +133,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 keyboardType: TextInputType.multiline,
                 onSaved: (value) =>
                     _formData['description'] = double.parse(value),
+                validator: (value) {
+                  if (value.trim().isEmpty) {
+                    return 'Nao pode ser vazio';
+                  }
+                  if (value.trim().length <= 6) {
+                    return 'mo minimo deve ter 6 letras';
+                  }
+                  return null;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -125,6 +156,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       onSaved: (value) => _formData['imageUrl'] = value,
                       onFieldSubmitted: (_) {
                         _saveForm();
+                      },
+                      validator: (value) {
+                        bool isEmpty = value.trim().isEmpty;
+                        bool isValid = !isValidImageUrl(value);
+
+                        if (isEmpty || isValid) {
+                          return 'informe uma url valida';
+                        }
+                        return null;
                       },
                     ),
                   ),
