@@ -77,6 +77,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 },
                 textInputAction: TextInputAction.next,
                 onSaved: (value) => _formData['title'] = value,
+                validator: (value) {
+                  if (value.trim().isEmpty) {
+                    return 'Nao pode ser vazio';
+                  }
+                  if(value.trim().length<=3){
+                    return 'mo minimo deve ter 3 letras';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 focusNode: _priceFocusNode,
@@ -89,6 +98,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
                 onSaved: (value) => _formData['price'] = double.parse(value),
+                validator: (value){
+                  if(value.isEmpty){}
+                },
               ),
               TextFormField(
                 focusNode: _descriptionFocusNode,
