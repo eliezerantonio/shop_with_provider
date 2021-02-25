@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:gerencimento_estado/providers/products.dart';
+import 'package:provider/provider.dart';
 import 'package:gerencimento_estado/providers/product.dart';
 
 class ProductFormScreen extends StatefulWidget {
@@ -44,11 +46,14 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     if (_form.currentState.validate()) {
       _form.currentState.save();
       final newProduct = Product(
-          id: Random().nextDouble().toString(),
           title: _formData['title'],
           price: _formData['price'],
           description: _formData['description'],
           imageUrl: _formData['imageUrl']);
+
+      context.read<Products>().addProduct(newProduct);
+      
+      Navigator.of(context).pop();
     }
   }
 
@@ -132,7 +137,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
                 onSaved: (value) =>
-                    _formData['description'] = double.parse(value),
+                    _formData['description'] = value,
                 validator: (value) {
                   if (value.trim().isEmpty) {
                     return 'Nao pode ser vazio';
