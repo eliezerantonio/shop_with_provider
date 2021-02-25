@@ -42,17 +42,36 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     _imageUrlController.dispose();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_formData.isEmpty) {
+      final product = ModalRoute.of(context).settings.arguments as Product;
+      _formData['id'] = product.id;
+      _formData['title'] = product.title;
+      _formData['description'] = product.description;
+      _formData['price'] = product.price;
+      _formData['imageUrl'] = product.imageUrl;
+      _imageUrlController.text = _formData['imageUrl'];
+    }
+  }
+
   void _saveForm() {
     if (_form.currentState.validate()) {
       _form.currentState.save();
-      final newProduct = Product(
+      final product = Product(
+          id: _formData['id'],
           title: _formData['title'],
           price: _formData['price'],
           description: _formData['description'],
           imageUrl: _formData['imageUrl']);
 
-      context.read<Products>().addProduct(newProduct);
-      
+      if (_formData['id'] == null) {
+        context.read<Products>().addProduct(product);
+      } else {
+        context.read<Products>().updateProduct(product);
+      }
+
       Navigator.of(context).pop();
     }
   }
@@ -88,6 +107,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _formData['title'],
                 decoration: InputDecoration(
                   labelText: "Titulo",
                 ),
@@ -107,6 +127,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 },
               ),
               TextFormField(
+                initialValue: _formData['price'].toString(),
                 focusNode: _priceFocusNode,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
@@ -130,14 +151,14 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 },
               ),
               TextFormField(
+                initialValue: _formData['description'],
                 focusNode: _descriptionFocusNode,
                 decoration: InputDecoration(
                   labelText: "Descricao",
                 ),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
-                onSaved: (value) =>
-                    _formData['description'] = value,
+                onSaved: (value) => _formData['description'] = value,
                 validator: (value) {
                   if (value.trim().isEmpty) {
                     return 'Nao pode ser vazio';
