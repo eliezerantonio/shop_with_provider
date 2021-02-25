@@ -1,4 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:gerencimento_estado/providers/products.dart';
+import 'package:provider/provider.dart';
+import 'package:gerencimento_estado/providers/product.dart';
 
 class ProductFormScreen extends StatefulWidget {
   ProductFormScreen({Key key}) : super(key: key);
@@ -12,6 +17,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final _descriptionFocusNode = FocusNode();
   final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
+  final _form = GlobalKey<FormState>();
+  final _formData = Map<String, Object>();
 
   @override
   void initState() {
@@ -19,7 +26,12 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     _imageUrlFocusNode.addListener(_updateImageUrl);
   }
 
-  void _updateImageUrl() {}
+  void _updateImageUrl() {
+    if (isValidImageUrl(_imageUrlController.text)) {
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -31,17 +43,75 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_formData.isEmpty) {
+      final product = ModalRoute.of(context).settings.arguments as Product;
+      if (product != null) {
+        _formData['id'] = product.id;
+        _formData['title'] = product.title;
+        _formData['description'] = product.description;
+        _formData['price'] = product.price;
+        _formData['imageUrl'] = product.imageUrl;
+        _imageUrlController.text = _formData['imageUrl'];
+      } else {
+        _formData['price'] = '';
+      }
+    }
+  }
+
+  void _saveForm() {
+    if (_form.currentState.validate()) {
+      _form.currentState.save();
+      final product = Product(
+          id: _formData['id'],
+          title: _formData['title'],
+          price: _formData['price'],
+          description: _formData['description'],
+          imageUrl: _formData['imageUrl']);
+
+      if (_formData['id'] == null) {
+        context.read<Products>().addProduct(product);
+      } else {
+        context.read<Products>().updateProduct(product);
+      }
+
+      Navigator.of(context).pop();
+    }
+  }
+
+  bool isValidImageUrl(String url) {
+    bool startWithHttp = url.toLowerCase().startsWith('http://');
+    bool startWithHttps = url.toLowerCase().startsWith('https://');
+    bool endsWithPng = url.toLowerCase().endsWith('.png');
+    bool endsWithJpg = url.toLowerCase().endsWith('.jpg');
+    bool endsWithJpeg = url.toLowerCase().endsWith('.jpeg');
+    return (startWithHttps || startWithHttp) &&
+        (endsWithPng || endsWithJpg || endsWithJpeg);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Formulario Produto"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save_alt_outlined),
+            onPressed: () {
+              _saveForm();
+            },
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
+          key: _form,
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _formData['title'],
                 decoration: InputDecoration(
                   labelText: "Titulo",
                 ),
@@ -49,8 +119,19 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
                 },
                 textInputAction: TextInputAction.next,
+                onSaved: (value) => _formData['title'] = value,
+                validator: (value) {
+                  if (value.trim().isEmpty) {
+                    return 'Nao pode ser vazio';
+                  }
+                  if (value.trim().length <= 3) {
+                    return 'mo minimo deve ter 3 letras';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
+                initialValue: _formData['price'].toString(),
                 focusNode: _priceFocusNode,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
@@ -60,14 +141,37 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
+                onSaved: (value) => _formData['price'] = double.parse(value),
+                validator: (value) {
+                  bool isEmpty = value.trim().isEmpty;
+
+                  var newPrice = double.tryParse(value);
+                  bool isValid = newPrice == null || newPrice <= 0;
+
+                  if (isEmpty || isValid) {
+                    return 'Preco invalido';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
+                initialValue: _formData['description'],
                 focusNode: _descriptionFocusNode,
                 decoration: InputDecoration(
                   labelText: "Descricao",
                 ),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
+                onSaved: (value) => _formData['description'] = value,
+                validator: (value) {
+                  if (value.trim().isEmpty) {
+                    return 'Nao pode ser vazio';
+                  }
+                  if (value.trim().length <= 6) {
+                    return 'mo minimo deve ter 6 letras';
+                  }
+                  return null;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -79,6 +183,19 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.done,
                       focusNode: _imageUrlFocusNode,
+                      onSaved: (value) => _formData['imageUrl'] = value,
+                      onFieldSubmitted: (_) {
+                        _saveForm();
+                      },
+                      validator: (value) {
+                        bool isEmpty = value.trim().isEmpty;
+                        bool isValid = !isValidImageUrl(value);
+
+                        if (isEmpty || isValid) {
+                          return 'informe uma url valida';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   Container(
