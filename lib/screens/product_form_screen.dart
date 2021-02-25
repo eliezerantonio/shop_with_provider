@@ -47,12 +47,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     super.didChangeDependencies();
     if (_formData.isEmpty) {
       final product = ModalRoute.of(context).settings.arguments as Product;
-      _formData['id'] = product.id;
-      _formData['title'] = product.title;
-      _formData['description'] = product.description;
-      _formData['price'] = product.price;
-      _formData['imageUrl'] = product.imageUrl;
-      _imageUrlController.text = _formData['imageUrl'];
+      if (product != null) {
+        _formData['id'] = product.id;
+        _formData['title'] = product.title;
+        _formData['description'] = product.description;
+        _formData['price'] = product.price;
+        _formData['imageUrl'] = product.imageUrl;
+        _imageUrlController.text = _formData['imageUrl'];
+      } else {
+        _formData['price'] = '';
+      }
     }
   }
 
