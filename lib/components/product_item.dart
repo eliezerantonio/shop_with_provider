@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gerencimento_estado/providers/products.dart';
+import 'package:provider/provider.dart';
 import 'package:gerencimento_estado/helpers/app_routes.dart';
 import 'package:gerencimento_estado/providers/product.dart';
 
@@ -29,7 +31,33 @@ class ProductItem extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return AlertDialog(
+                            title: Text("Tem certeza?"),
+                            actions: [
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Nao"),
+                              ),
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Sim"),
+                              ),
+                            ],
+                          );
+                        })
+                    .then((value) => {
+                          Provider.of<Products>(context, listen: false)
+                              .deleteProduct(product.id)
+                        });
+              },
               icon: Icon(
                 Icons.delete,
                 color: Theme.of(context).errorColor,
