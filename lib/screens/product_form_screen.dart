@@ -65,7 +65,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     if (_form.currentState.validate()) {
       _form.currentState.save();
       setState(() {
-          _isLoading = true;
+        _isLoading = true;
       });
       final product = Product(
           id: _formData['id'],
@@ -73,10 +73,26 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           price: _formData['price'],
           description: _formData['description'],
           imageUrl: _formData['imageUrl']);
-    
+
       final products = Provider.of<Products>(context, listen: false);
       if (_formData['id'] == null) {
-        products.addProduct(product).then((_) {
+        products.addProduct(product).catchError((onError) {
+          return showDialog<Null>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Erro!"),
+                content: Text("Ocorreu um erro para salvar o produto"),
+                actions: [
+                  FlatButton(
+                    child: Text("OK"),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              );
+            },
+          );
+        }).then((_) {
           setState(() {
             _isLoading = false;
           });
