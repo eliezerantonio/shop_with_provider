@@ -7,6 +7,8 @@ import 'package:gerencimento_estado/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
+  final String _url =
+      "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
   List<Product> _items = DUMMY_PRODUCTS;
 
 // retornando uma copia com o Spread
@@ -31,10 +33,8 @@ class Products with ChangeNotifier {
   }
 */
   Future<void> addProduct(Product newProduct) async {
-    const url =
-        "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
     try {
-      final response = await http.post(url,
+      final response = await http.post(_url,
           body: json.encode({
             'title': newProduct.title,
             'description': newProduct.description,
@@ -51,6 +51,12 @@ class Products with ChangeNotifier {
       ));
       notifyListeners();
     } catch (e) {}
+  }
+
+  Future<void> loadProducts() async {
+    final response = await http.get(_url);
+
+    print(json.decode(response.body));
   }
 
   void updateProduct(Product product) {
