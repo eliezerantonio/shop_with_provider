@@ -64,13 +64,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   Future<void> _saveForm() {
     if (_form.currentState.validate()) {
       _form.currentState.save();
+      setState(() {
+          _isLoading = true;
+      });
       final product = Product(
           id: _formData['id'],
           title: _formData['title'],
           price: _formData['price'],
           description: _formData['description'],
           imageUrl: _formData['imageUrl']);
-      _isLoading = true;
+    
       final products = Provider.of<Products>(context, listen: false);
       if (_formData['id'] == null) {
         products.addProduct(product).then((_) {
@@ -80,10 +83,12 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           Navigator.of(context).pop();
         });
       } else {
-        context.read<Products>().updateProduct(product);
+        products.updateProduct(product);
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.of(context).pop();
       }
-
-      Navigator.of(context).pop();
     }
   }
 
