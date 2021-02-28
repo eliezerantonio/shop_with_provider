@@ -78,7 +78,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       if (_formData['id'] == null) {
         try {
           await products.addProduct(product);
-              Navigator.of(context).pop();
+          Navigator.of(context).pop();
         } catch (e) {
           await showDialog<Null>(
             context: context,
@@ -99,7 +99,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           setState(() {
             _isLoading = false;
           });
-      
         }
       } else {
         products.updateProduct(product);
@@ -157,7 +156,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                         if (value.trim().isEmpty) {
                           return 'Nao pode ser vazio';
                         }
-                        if (value.trim().length <= 3) {
+                        if (value.trim().length < 3) {
                           return 'mo minimo deve ter 3 letras';
                         }
                         return null;
