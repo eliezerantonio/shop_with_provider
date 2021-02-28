@@ -31,25 +31,29 @@ class Products with ChangeNotifier {
   }
 */
   void addProduct(Product newProduct) {
-    const url = "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
+    const url =
+        "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
 
-    final map={};
-    http.post(url, body: json.encode({
-      'title':newProduct.title,
-      'description':newProduct.description,
-      'price':newProduct.price,
-      'isFavorite':newProduct.isFavorite,
-      'imageUrl':newProduct.imageUrl,
-    }));
+    http
+        .post(url,
+            body: json.encode({
+              'title': newProduct.title,
+              'description': newProduct.description,
+              'price': newProduct.price,
+              'isFavorite': newProduct.isFavorite,
+              'imageUrl': newProduct.imageUrl,
+            }))
+        .then((response) {
 
-    _items.add(Product(
-      id: Random().nextDouble().toString(),
-      description: newProduct.description,
-      imageUrl: newProduct.imageUrl,
-      price: newProduct.price,
-      title: newProduct.title,
-    ));
-    notifyListeners();
+      _items.add(Product(
+        id: json.decode(response.body)['name'],
+        description: newProduct.description,
+        imageUrl: newProduct.imageUrl,
+        price: newProduct.price,
+        title: newProduct.title,
+      ));
+      notifyListeners();
+    });
   }
 
   void updateProduct(Product product) {

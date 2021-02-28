@@ -37,8 +37,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     super.dispose();
     _priceFocusNode.dispose();
     _descriptionFocusNode.dispose();
-    _imageUrlFocusNode.dispose();
     _imageUrlFocusNode.removeListener(_updateImageUrl);
+    _imageUrlFocusNode.dispose();
     _imageUrlController.dispose();
   }
 
@@ -208,12 +208,10 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     alignment: Alignment.center,
                     child: _imageUrlController.text.isEmpty
                         ? Text("Informe a URL")
-                        : FittedBox(
-                            child: Image.network(
-                              _imageUrlController.text,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                        : Image.network(
+                          _imageUrlController.text,
+                          fit: BoxFit.cover,
+                        ),
                   )
                 ],
               )
