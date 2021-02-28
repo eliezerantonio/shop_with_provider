@@ -3,6 +3,7 @@ import 'package:gerencimento_estado/components/app_drawer.dart';
 import 'package:gerencimento_estado/components/badge.dart';
 import 'package:gerencimento_estado/helpers/app_routes.dart';
 import 'package:gerencimento_estado/providers/cart.dart';
+import 'package:gerencimento_estado/providers/products.dart';
 import '../components/product_grid.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _showFavoriteOnly = false;
+  @override
+  void initState() {
+    super.initState();
+
+    //carregar prorodutos
+
+    Provider.of<Products>(context, listen: false).loadProducts();
+  }
 
   @override
   Widget build(BuildContext context) {

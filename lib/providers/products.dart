@@ -2,12 +2,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
-import 'package:gerencimento_estado/data/dummy_data.dart';
 import 'package:gerencimento_estado/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
-  List<Product> _items = DUMMY_PRODUCTS;
+  final String _url =
+      "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
+  List<Product> _items = [];
 
 // retornando uma copia com o Spread
   List<Product> get items => [..._items];
@@ -30,20 +31,16 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 */
-  Future<void> addProduct(Product newProduct) {
-    const url =
-        "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products";
-
-    return http
-        .post(url,
-            body: json.encode({
-              'title': newProduct.title,
-              'description': newProduct.description,
-              'price': newProduct.price,
-              'isFavorite': newProduct.isFavorite,
-              'imageUrl': newProduct.imageUrl,
-            }))
-        .then((response) {
+  Future<void> addProduct(Product newProduct) async {
+    try {
+      final response = await http.post(_url,
+          body: json.encode({
+            'title': newProduct.title,
+            'description': newProduct.description,
+            'price': newProduct.price,
+            'isFavorite': newProduct.isFavorite,
+            'imageUrl': newProduct.imageUrl,
+          }));
       _items.add(Product(
         id: json.decode(response.body)['name'],
         description: newProduct.description,
@@ -52,6 +49,23 @@ class Products with ChangeNotifier {
         title: newProduct.title,
       ));
       notifyListeners();
+    } catch (e) {}
+  }
+
+  Future<void> loadProducts() async {
+    final response = await http.get(_url);
+
+    Map<String, dynamic> data = json.decode(response.body);
+
+    data.forEach((productId, productData) {
+      _items.add(Product(
+        id: productId,
+        description: productData['description'],
+        imageUrl: productData['imageUrl'],
+        price: productData['price'],
+        title: productData['title'],
+        isFavorite: productData['isFavorite'],
+      ));
     });
   }
 
