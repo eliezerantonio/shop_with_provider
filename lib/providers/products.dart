@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:gerencimento_estado/data/dummy_data.dart';
 import 'package:gerencimento_estado/providers/product.dart';
+import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   List<Product> _items = DUMMY_PRODUCTS;
@@ -29,6 +31,17 @@ class Products with ChangeNotifier {
   }
 */
   void addProduct(Product newProduct) {
+    const url = "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
+
+    final map={};
+    http.post(url, body: json.encode({
+      'title':newProduct.title,
+      'description':newProduct.description,
+      'price':newProduct.price,
+      'isFavorite':newProduct.isFavorite,
+      'imageUrl':newProduct.imageUrl,
+    }));
+
     _items.add(Product(
       id: Random().nextDouble().toString(),
       description: newProduct.description,
