@@ -30,20 +30,18 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 */
-  Future<void> addProduct(Product newProduct) {
+  Future<void> addProduct(Product newProduct) async {
     const url =
-        "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products";
-
-    return http
-        .post(url,
-            body: json.encode({
-              'title': newProduct.title,
-              'description': newProduct.description,
-              'price': newProduct.price,
-              'isFavorite': newProduct.isFavorite,
-              'imageUrl': newProduct.imageUrl,
-            }))
-        .then((response) {
+        "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
+    try {
+      final response = await http.post(url,
+          body: json.encode({
+            'title': newProduct.title,
+            'description': newProduct.description,
+            'price': newProduct.price,
+            'isFavorite': newProduct.isFavorite,
+            'imageUrl': newProduct.imageUrl,
+          }));
       _items.add(Product(
         id: json.decode(response.body)['name'],
         description: newProduct.description,
@@ -52,7 +50,7 @@ class Products with ChangeNotifier {
         title: newProduct.title,
       ));
       notifyListeners();
-    });
+    } catch (e) {}
   }
 
   void updateProduct(Product product) {
