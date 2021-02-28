@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
-import 'package:gerencimento_estado/data/dummy_data.dart';
 import 'package:gerencimento_estado/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   final String _url =
       "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
-  List<Product> _items = DUMMY_PRODUCTS;
+  List<Product> _items = [];
 
 // retornando uma copia com o Spread
   List<Product> get items => [..._items];
@@ -56,7 +55,18 @@ class Products with ChangeNotifier {
   Future<void> loadProducts() async {
     final response = await http.get(_url);
 
-    print(json.decode(response.body));
+    Map<String, dynamic> data = json.decode(response.body);
+
+    data.forEach((productId, productData) {
+      _items.add(Product(
+        id: productId,
+        description: productData['description'],
+        imageUrl: productData['imageUrl'],
+        price: productData['price'],
+        title: productData['title'],
+        isFavorite: productData['isFavorite'],
+      ));
+    });
   }
 
   void updateProduct(Product product) {
