@@ -57,7 +57,8 @@ class Products with ChangeNotifier {
 
     Map<String, dynamic> data = json.decode(response.body);
 
-    data.forEach((productId, productData) {
+    if(data!=null){
+      data.forEach((productId, productData) {
       _items.add(Product(
         id: productId,
         description: productData['description'],
@@ -67,6 +68,9 @@ class Products with ChangeNotifier {
         isFavorite: productData['isFavorite'],
       ));
     });
+    notifyListeners();
+    }
+    return Future.value();
   }
 
   void updateProduct(Product product) {
