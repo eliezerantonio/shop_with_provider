@@ -30,11 +30,11 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 */
-  void addProduct(Product newProduct) {
+  Future<void> addProduct(Product newProduct) {
     const url =
         "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
 
-    http
+    return http
         .post(url,
             body: json.encode({
               'title': newProduct.title,
@@ -44,7 +44,6 @@ class Products with ChangeNotifier {
               'imageUrl': newProduct.imageUrl,
             }))
         .then((response) {
-
       _items.add(Product(
         id: json.decode(response.body)['name'],
         description: newProduct.description,
