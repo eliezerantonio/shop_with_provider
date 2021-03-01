@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:gerencimento_estado/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
-  final String _url =
-      "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products.json";
+  final String _baseUrl =
+      "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products";
   List<Product> _items = [];
 
 // retornando uma copia com o Spread
@@ -33,7 +32,7 @@ class Products with ChangeNotifier {
 */
   Future<void> addProduct(Product newProduct) async {
     try {
-      final response = await http.post(_url,
+      final response = await http.post("$_baseUrl.json",
           body: json.encode({
             'title': newProduct.title,
             'description': newProduct.description,
@@ -53,40 +52,62 @@ class Products with ChangeNotifier {
   }
 
   Future<void> loadProducts() async {
-    final response = await http.get(_url);
+    final response = await http.get("$_baseUrl.json");
 
     Map<String, dynamic> data = json.decode(response.body);
 
-    data.forEach((productId, productData) {
-      _items.add(Product(
-        id: productId,
-        description: productData['description'],
-        imageUrl: productData['imageUrl'],
-        price: productData['price'],
-        title: productData['title'],
-        isFavorite: productData['isFavorite'],
-      ));
-    });
+    if (data != null) {
+      _items.clear();
+      data.forEach((productId, productData) {
+        _items.add(Product(
+          id: productId,
+          description: productData['description'],
+          imageUrl: productData['imageUrl'],
+          price: productData['price'],
+          title: productData['title'],
+          isFavorite: productData['isFavorite'],
+        ));
+      });
+      notifyListeners();
+    }
+    return Future.value();
   }
 
-  void updateProduct(Product product) {
+  Future<void> updateProduct(Product product) async {
     if (product == null || product.id == null) {
       return;
     }
     final index = _items.indexWhere((prod) => prod.id == product.id);
 
     if (index >= 0) {
+      await http.patch("$_baseUrl/${product.id}.json", body: {
+        json.encode({
+       
+          'title': product.title,
+          'description': product.description,
+          'price': product.price,
+          'isFavorite': product.isFavorite,
+          'imageUrl': product.imageUrl,
+        })
+      });
       _items[index] = product;
       notifyListeners();
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     if (id != null) {
       final index = _items.indexWhere((prod) => prod.id == id);
       if (index >= 0) {
-        _items.removeWhere((prod) => prod.id == id);
+        final product = _items[index];
+        _items.remove(product);
         notifyListeners();
+        final response = await http.delete("$_baseUrl/${product.id}.json");
+
+        if (response.statusCode >= 400) {
+          _items.insert(index, product);
+          notifyListeners();
+        }
       }
     }
   }

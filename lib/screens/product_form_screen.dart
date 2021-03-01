@@ -75,38 +75,34 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           imageUrl: _formData['imageUrl']);
 
       final products = Provider.of<Products>(context, listen: false);
-      if (_formData['id'] == null) {
-        try {
+
+      try {
+        if (_formData['id'] == null) {
           await products.addProduct(product);
-              Navigator.of(context).pop();
-        } catch (e) {
-          await showDialog<Null>(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text("Erro!"),
-                content: Text("Ocorreu um erro para salvar o produto"),
-                actions: [
-                  FlatButton(
-                    child: Text("OK"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              );
-            },
-          );
-        } finally {
-          setState(() {
-            _isLoading = false;
-          });
-      
+        } else {
+          await products.updateProduct(product);
         }
-      } else {
-        products.updateProduct(product);
+        Navigator.of(context).pop();
+      } catch (e) {
+        await showDialog<Null>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Erro!"),
+              content: Text("Ocorreu um erro para salvar o produto"),
+              actions: [
+                FlatButton(
+                  child: Text("OK"),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            );
+          },
+        );
+      } finally {
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context).pop();
       }
     }
   }
@@ -157,7 +153,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                         if (value.trim().isEmpty) {
                           return 'Nao pode ser vazio';
                         }
-                        if (value.trim().length <= 3) {
+                        if (value.trim().length < 3) {
                           return 'mo minimo deve ter 3 letras';
                         }
                         return null;

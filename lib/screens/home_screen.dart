@@ -19,13 +19,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _showFavoriteOnly = false;
+  bool _isLoading = true;
   @override
   void initState() {
     super.initState();
 
     //carregar prorodutos
 
-    Provider.of<Products>(context, listen: false).loadProducts();
+    Provider.of<Products>(context, listen: false).loadProducts().then((value) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   @override
@@ -75,7 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: ProductGrid(_showFavoriteOnly),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ProductGrid(_showFavoriteOnly),
     );
   }
 }
