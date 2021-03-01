@@ -82,6 +82,7 @@ class Products with ChangeNotifier {
     if (index >= 0) {
       await http.patch("$_baseUrl/${product.id}.json", body: {
         json.encode({
+       
           'title': product.title,
           'description': product.description,
           'price': product.price,
@@ -94,12 +95,19 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     if (id != null) {
       final index = _items.indexWhere((prod) => prod.id == id);
       if (index >= 0) {
-        _items.removeWhere((prod) => prod.id == id);
+        final product = _items[index];
+        _items.remove(product);
         notifyListeners();
+        final response = await http.delete("$_baseUrl/${product.id}.json");
+
+        if (response.statusCode >= 400) {
+          _items.insert(index, product);
+          notifyListeners();
+        }
       }
     }
   }
