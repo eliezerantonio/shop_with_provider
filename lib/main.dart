@@ -4,6 +4,7 @@ import 'package:gerencimento_estado/providers/cart.dart';
 import 'package:gerencimento_estado/providers/counter_provider.dart';
 import 'package:gerencimento_estado/providers/products.dart';
 import 'package:gerencimento_estado/screens/ScreenScreen.dart';
+import 'package:gerencimento_estado/screens/auth_screen.dart';
 import 'package:gerencimento_estado/screens/cart_screen.dart';
 import 'package:gerencimento_estado/screens/orders_screen.dart';
 import 'package:gerencimento_estado/screens/product_detail_screen.dart';
@@ -38,13 +39,15 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.deepOrange,
           fontFamily: 'Lato',
         ),
-        home: MainScreen(),
+        initialRoute: AppRoutes.AUTH,
         routes: {
           AppRoutes.PRODUCT_DETAIL: (ctx) => ProductDetailScreen(),
           AppRoutes.CART: (ctx) => CartScreen(),
           AppRoutes.ORDERS: (ctx) => OrderScreen(),
           AppRoutes.HOME: (ctx) => HomeScreen(),
           AppRoutes.PRODUCTFORM: (ctx) => ProductFormScreen(),
+          AppRoutes.AUTH: (ctx) => AuthScreen(),
+          AppRoutes.MAIN: (ctx) => MainScreen(),
         },
       ),
     );
