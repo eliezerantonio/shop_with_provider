@@ -33,30 +33,32 @@ class ProductItem extends StatelessWidget {
             IconButton(
               onPressed: () {
                 showDialog(
-                        context: context,
-                        builder: (ctx) {
-                          return AlertDialog(
-                            title: Text("Tem certeza?"),
-                            actions: [
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Nao"),
-                              ),
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("Sim"),
-                              ),
-                            ],
-                          );
-                        })
-                    .then((value) => {
+                    context: context,
+                    builder: (ctx) {
+                      return AlertDialog(
+                        title: Text("Tem certeza?"),
+                        actions: [
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: Text("Nao"),
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            child: Text("Sim"),
+                          ),
+                        ],
+                      );
+                    }).then((value) => {
+                      if (value)
+                        {
                           Provider.of<Products>(context, listen: false)
                               .deleteProduct(product.id)
-                        });
+                        }
+                    });
               },
               icon: Icon(
                 Icons.delete,
