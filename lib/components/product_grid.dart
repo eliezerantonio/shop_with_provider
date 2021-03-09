@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gerencimento_estado/components/product_grid_item.dart';
-import 'package:gerencimento_estado/providers/product.dart';
 import 'package:gerencimento_estado/providers/products.dart';
 import 'package:provider/provider.dart';
 

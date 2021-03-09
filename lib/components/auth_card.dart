@@ -10,11 +10,47 @@ class AuthCard extends StatefulWidget {
 }
 
 class _AuthCardState extends State<AuthCard> {
+  GlobalKey<FormState> _formKey = GlobalKey();
+  bool _isLoading = false;
   AuthMode _authMode = AuthMode.Login;
   final _passwordControler = TextEditingController();
 
   Map<String, String> _authData = {'email': '', 'password': ''};
-  void _submit() {}
+
+  void _submit() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+    });
+
+    _formKey.currentState.save();
+
+    if (_authMode == AuthMode.Login) {
+//Login
+    } else {
+//>Registro
+
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _switchAuthMode() {
+    if (_authMode == AuthMode.Login) {
+      setState(() {
+        _authMode = AuthMode.Singup;
+      });
+    } else {
+      setState(() {
+        _authMode = AuthMode.Login;
+      });
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -32,8 +68,9 @@ class _AuthCardState extends State<AuthCard> {
       child: Container(
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16),
-        height: 320,
+        height: _authMode == AuthMode.Login ? 329 : 400,
         child: Form(
+          key: _formKey,
           child: Column(
             children: [
               TextFormField(
@@ -85,18 +122,29 @@ class _AuthCardState extends State<AuthCard> {
                           return null;
                         }
                       : null,
-                  onSaved: (value) => _authData["password"] = value,
                 ),
-              SizedBox(height: 20),
-              RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                color: Theme.of(context).primaryColor,
-                textColor: Theme.of(context).primaryTextTheme.button.color,
-                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 16),
-                child:
-                    Text(_authMode == AuthMode.Login ? "Entrar" : "Registrar"),
-                onPressed: _submit,
+              Spacer(),
+              if (_isLoading)
+                CircularProgressIndicator()
+              else
+                RaisedButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  color: Theme.of(context).primaryColor,
+                  textColor: Theme.of(context).primaryTextTheme.button.color,
+                  padding: EdgeInsets.symmetric(horizontal: 60, vertical: 16),
+                  child: Text(
+                      _authMode == AuthMode.Login ? "Entrar" : "Registrar"),
+                  onPressed: _submit,
+                ),
+              FlatButton(
+                onPressed: _switchAuthMode,
+                child: Text(
+                  "Alternar p/${_authMode == AuthMode.Login ? "Registrar" : "Entrar"}"
+                      .toUpperCase(),
+                  style: TextStyle(fontSize: 16),
+                ),
+                textColor: Theme.of(context).primaryColor,
               )
             ],
           ),
