@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gerencimento_estado/helpers/app_routes.dart';
+import 'package:gerencimento_estado/providers/auth.dart';
 import 'package:gerencimento_estado/providers/cart.dart';
 import 'package:gerencimento_estado/providers/counter_provider.dart';
 import 'package:gerencimento_estado/providers/products.dart';
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => Orders(),
+        ), 
+        ChangeNotifierProvider(
+          create: (_) => Auth(),
         )
       ],
       child: MaterialApp(
