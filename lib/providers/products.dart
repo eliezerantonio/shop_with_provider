@@ -66,7 +66,7 @@ class Products with ChangeNotifier {
           imageUrl: productData['imageUrl'],
           price: productData['price'],
           title: productData['title'],
-          isFavorite: productData['isFavorite'],
+      
         ));
       });
       notifyListeners();
