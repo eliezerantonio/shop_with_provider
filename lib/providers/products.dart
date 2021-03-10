@@ -8,7 +8,8 @@ class Products with ChangeNotifier {
   final String _baseUrl =
       "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products";
   List<Product> _items = [];
-
+  String _token;
+  Products(this._token, this._items);
 // retornando uma copia com o Spread
   List<Product> get items => [..._items];
   List<Product> get favoriteItems {
@@ -52,7 +53,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> loadProducts() async {
-    final response = await http.get("$_baseUrl.json");
+    final response = await http.get("$_baseUrl.json?auth=$_token");
 
     Map<String, dynamic> data = json.decode(response.body);
 

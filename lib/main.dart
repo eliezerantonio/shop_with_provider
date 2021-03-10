@@ -24,17 +24,19 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => Products(),
+          create: (_) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (_) => new Products(null, []),
+          update: (context, auth, previusProducts) =>
+              Products(auth.token, previusProducts.items),
         ),
         ChangeNotifierProvider(
           create: (_) => Cart(),
         ),
         ChangeNotifierProvider(
           create: (_) => Orders(),
-        ), 
-        ChangeNotifierProvider(
-          create: (_) => Auth(),
-        )
+        ),
       ],
       child: MaterialApp(
         title: 'Minha Loja',
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.deepOrange,
           fontFamily: 'Lato',
         ),
-       // initialRoute: AppRoutes.AUTH_HOME,
+        // initialRoute: AppRoutes.AUTH_HOME,
         routes: {
           AppRoutes.PRODUCT_DETAIL: (ctx) => ProductDetailScreen(),
           AppRoutes.CART: (ctx) => CartScreen(),
