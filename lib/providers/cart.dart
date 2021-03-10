@@ -1,8 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:gerencimento_estado/providers/product.dart';
+import './product.dart';
 
 class CartItem {
   final String id;
@@ -13,10 +12,10 @@ class CartItem {
 
   CartItem({
     @required this.id,
-    @required this.price,
     @required this.productId,
-    @required this.quantity,
     @required this.title,
+    @required this.quantity,
+    @required this.price,
   });
 }
 
@@ -40,63 +39,63 @@ class Cart with ChangeNotifier {
   }
 
   void addItem(Product product) {
-    //caso ja existe vai aumentar a quantidade
     if (_items.containsKey(product.id)) {
-      _items.update(product.id, (existingItem) {
-        return CartItem(
+      _items.update(
+        product.id,
+        (existingItem) => CartItem(
           id: existingItem.id,
           productId: product.id,
-          price: existingItem.price,
-          quantity: existingItem.quantity + 1,
           title: existingItem.title,
-        );
-      });
+          quantity: existingItem.quantity + 1,
+          price: existingItem.price,
+        ),
+      );
     } else {
-      //caso nao existe vai adicionar um novo
       _items.putIfAbsent(
         product.id,
         () => CartItem(
           id: Random().nextDouble().toString(),
-          price: product.price,
           productId: product.id,
-          quantity: 1,
           title: product.title,
+          price: product.price,
+          quantity: 1,
         ),
       );
     }
+
     notifyListeners();
   }
 
-  void removeSingleItem(String productId) {
-    //se nao tem nao faz nada
-    if (!_items.containsKey(productId)) {
+  void removeSingleItem(productId) {
+    if(!_items.containsKey(productId)) {
       return;
     }
-    // se a quantidade for 1 remover
-    if (items[productId].quantity == 1) {
+
+    if(_items[productId].quantity == 1) {
       _items.remove(productId);
     } else {
-      _items.update(productId, (existingItem) {
-        return CartItem(
+      _items.update(
+        productId,
+        (existingItem) => CartItem(
           id: existingItem.id,
-          productId: productId,
-          price: existingItem.price,
-          quantity: existingItem.quantity - 1,
+          productId: existingItem.productId,
           title: existingItem.title,
-        );
-      });
+          quantity: existingItem.quantity - 1,
+          price: existingItem.price,
+        ),
+      );
     }
 
-    notifyListeners();
-  }
-
-  void clear() {
-    _items = {};
     notifyListeners();
   }
 
   void removeItem(String productId) {
     _items.remove(productId);
+    notifyListeners();
+  }
+
+  void clear() {
+    _items = {};
     notifyListeners();
   }
 }
