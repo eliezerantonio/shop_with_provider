@@ -4,7 +4,6 @@ import 'package:gerencimento_estado/screens/ProductScreen.dart';
 import 'package:gerencimento_estado/screens/cart_screen.dart';
 import 'package:gerencimento_estado/screens/home_screen.dart';
 import 'package:gerencimento_estado/screens/orders_screen.dart';
-import 'package:gerencimento_estado/screens/product_detail_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key key}) : super(key: key);

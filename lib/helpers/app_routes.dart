@@ -3,7 +3,7 @@ class AppRoutes {
   static final CART = '/cart ';
   static final ORDERS = '/orders ';
   static final HOME = '/home';
-  static final AUTH = '/';
+  static final AUTH_HOME = '/';
   static final MAIN = '/main';
   static final PRODUCTFORM = '/product-form';
 
