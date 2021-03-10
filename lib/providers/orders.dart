@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:gerencimento_estado/helpers/constants.dart';
 import 'package:http/http.dart' as http;
 
-
 import './cart.dart';
 
 class Order {
