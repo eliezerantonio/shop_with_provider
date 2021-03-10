@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gerencimento_estado/exceptions/auth_exception.dart';
 import 'package:gerencimento_estado/providers/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -28,13 +29,18 @@ class _AuthCardState extends State<AuthCard> {
     });
     Auth auth = Provider.of(context, listen: false);
     _formKey.currentState.save();
-
-    if (_authMode == AuthMode.Login) {
+    try {
+      if (_authMode == AuthMode.Login) {
 //Login
-      await auth.login(_authData["email"], _authData["password"]);
-    } else {
+        await auth.login(_authData["email"], _authData["password"]);
+      } else {
 //>Registro
-      await auth.signup(_authData["email"], _authData["password"]);
+        await auth.signup(_authData["email"], _authData["password"]);
+      }
+    } on AuthException catch (e) {
+      _showErrorDialog(e.toString());
+    } catch (error) {
+      _showErrorDialog('erro inesperado');
     }
 
     setState(() {
@@ -52,6 +58,23 @@ class _AuthCardState extends State<AuthCard> {
         _authMode = AuthMode.Login;
       });
     }
+  }
+
+  void _showErrorDialog(String msg) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text("Ocorreu um erro!"),
+              content: Text(msg),
+              actions: [
+                FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Fechar"),
+                )
+              ],
+            ));
   }
 
   @override

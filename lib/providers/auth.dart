@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:gerencimento_estado/const/token.dart';
+import 'package:gerencimento_estado/exceptions/auth_exception.dart';
 import 'package:http/http.dart' as http;
 
 class Auth with ChangeNotifier {
@@ -20,8 +21,10 @@ class Auth with ChangeNotifier {
         },
       ),
     );
-
-    print(json.decode(response.body));
+    final responseBody = json.decode(response.body);
+    if (responseBody["error"] != null) {
+      throw AuthException(responseBody['error']['message']);
+    }
     return Future.value();
   }
 
