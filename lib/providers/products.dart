@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
+import 'package:gerencimento_estado/helpers/constants.dart';
 import 'package:gerencimento_estado/providers/product.dart';
 import 'package:http/http.dart' as http;
 
@@ -54,6 +55,7 @@ class Products with ChangeNotifier {
 
   Future<void> loadProducts() async {
     final response = await http.get("$_baseUrl.json?auth=$_token");
+    final favResponse = await http.get("${Constants.BASE_API_URL}/userFavorites/userID.json?auth=$_token");
 
     Map<String, dynamic> data = json.decode(response.body);
 
