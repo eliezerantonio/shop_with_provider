@@ -33,7 +33,7 @@ class Products with ChangeNotifier {
 */
   Future<void> addProduct(Product newProduct) async {
     try {
-      final response = await http.post("$_baseUrl.json",
+      final response = await http.post("$_baseUrl.json?auth=$_token",
           body: json.encode({
             'title': newProduct.title,
             'description': newProduct.description,
@@ -81,7 +81,7 @@ class Products with ChangeNotifier {
     final index = _items.indexWhere((prod) => prod.id == product.id);
 
     if (index >= 0) {
-      await http.patch("$_baseUrl/${product.id}.json",
+      await http.patch("$_baseUrl/${product.id}.json?auth=$_token",
           body: json.encode({
             'title': product.title,
             'description': product.description,
@@ -102,7 +102,7 @@ class Products with ChangeNotifier {
         final product = _items[index];
         _items.remove(product);
         notifyListeners();
-        final response = await http.delete("$_baseUrl/${product.id}.json");
+        final response = await http.delete("$_baseUrl/${product.id}.json?auth=$_token");
 
         if (response.statusCode >= 400) {
           _items.insert(index, product);
