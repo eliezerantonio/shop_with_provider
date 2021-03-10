@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:gerencimento_estado/const/token.dart';
+import 'package:gerencimento_estado/data/store.dart';
 import 'package:gerencimento_estado/exceptions/auth_exception.dart';
 import 'package:http/http.dart' as http;
 

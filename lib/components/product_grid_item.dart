@@ -14,7 +14,7 @@ class ProductGridItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
-        child: GestureDetector( 
+        child: GestureDetector(
           onTap: () {
             Navigator.of(context)
                 .pushNamed(AppRoutes.PRODUCT_DETAIL, arguments: product);
@@ -29,7 +29,7 @@ class ProductGridItem extends StatelessWidget {
           leading: Consumer<Product>(
             builder: (context, product, _) => IconButton(
               onPressed: () {
-                product.toggleFavorite(auth.token, auth.userID);
+                product.toggleFavorite(auth.token, auth.userId);
               },
               icon: Icon(
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
