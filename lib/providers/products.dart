@@ -1,74 +1,47 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
+import 'package:gerencimento_estado/exceptions/http_exception.dart';
 import 'package:gerencimento_estado/helpers/constants.dart';
 import 'package:gerencimento_estado/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
-  final String _baseUrl =
-      "https://fluttercoder-15a98-default-rtdb.firebaseio.com/products";
+  final String _baseUrl = '${Constants.BASE_API_URL}/products';
   List<Product> _items = [];
   String _token;
-  Products(this._token, this._items);
-// retornando uma copia com o Spread
+  String _userId;
+
+  Products([this._token, this._userId, this._items = const []]);
+
   List<Product> get items => [..._items];
+
+  int get itemsCount {
+    return _items.length;
+  }
+
   List<Product> get favoriteItems {
     return _items.where((prod) => prod.isFavorite).toList();
   }
 
-  int itemCount() {
-    return _items.length;
-  }
-
-  /* 
-  bool _showFavoriteOnly = false;
-  void showFavoriteOnly() {
-    _showFavoriteOnly = true;
-    notifyListeners();
-  }
-  void showAll(){
-    _showFavoriteOnly-false;
-    notifyListeners();
-  }
-*/
-  Future<void> addProduct(Product newProduct) async {
-    try {
-      final response = await http.post("$_baseUrl.json?auth=$_token",
-          body: json.encode({
-            'title': newProduct.title,
-            'description': newProduct.description,
-            'price': newProduct.price,
-            'isFavorite': newProduct.isFavorite,
-            'imageUrl': newProduct.imageUrl,
-          }));
-      _items.add(Product(
-        id: json.decode(response.body)['name'],
-        description: newProduct.description,
-        imageUrl: newProduct.imageUrl,
-        price: newProduct.price,
-        title: newProduct.title,
-      ));
-      notifyListeners();
-    } catch (e) {}
-  }
-
   Future<void> loadProducts() async {
     final response = await http.get("$_baseUrl.json?auth=$_token");
-    final favResponse = await http.get("${Constants.BASE_API_URL}/userFavorites/userID.json?auth=$_token");
-
     Map<String, dynamic> data = json.decode(response.body);
+    
+    final favResponse = await http.get("${Constants.BASE_API_URL}/userFavorites/$_userId.json?auth=$_token");
+    final favMap = json.decode(favResponse.body);
 
+    _items.clear();
     if (data != null) {
-      _items.clear();
       data.forEach((productId, productData) {
+        final isFavorite = favMap == null ? false : favMap[productId] ?? false;
         _items.add(Product(
           id: productId,
-          description: productData['description'],
-          imageUrl: productData['imageUrl'],
-          price: productData['price'],
           title: productData['title'],
-      
+          description: productData['description'],
+          price: productData['price'],
+          imageUrl: productData['imageUrl'],
+          isFavorite: isFavorite,
         ));
       });
       notifyListeners();
@@ -76,41 +49,74 @@ class Products with ChangeNotifier {
     return Future.value();
   }
 
+  Future<void> addProduct(Product newProduct) async {
+    final response = await http.post(
+      "$_baseUrl.json?auth=$_token",
+      body: json.encode({
+        'title': newProduct.title,
+        'description': newProduct.description,
+        'price': newProduct.price,
+        'imageUrl': newProduct.imageUrl,
+      }),
+    );
+
+    _items.add(Product(
+      id: json.decode(response.body)['name'],
+      title: newProduct.title,
+      description: newProduct.description,
+      price: newProduct.price,
+      imageUrl: newProduct.imageUrl,
+    ));
+    notifyListeners();
+  }
+
   Future<void> updateProduct(Product product) async {
     if (product == null || product.id == null) {
       return;
     }
+
     final index = _items.indexWhere((prod) => prod.id == product.id);
-
     if (index >= 0) {
-      await http.patch("$_baseUrl/${product.id}.json?auth=$_token",
-          body: json.encode({
-            'title': product.title,
-            'description': product.description,
-            'price': product.price,
-            //'isFavorite': product.isFavorite,
-            'imageUrl': product.imageUrl,
-          }));
-
+      await http.patch(
+        "$_baseUrl/${product.id}.json?auth=$_token",
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+        }),
+      );
       _items[index] = product;
       notifyListeners();
     }
   }
 
   Future<void> deleteProduct(String id) async {
-    if (id != null) {
-      final index = _items.indexWhere((prod) => prod.id == id);
-      if (index >= 0) {
-        final product = _items[index];
-        _items.remove(product);
-        notifyListeners();
-        final response = await http.delete("$_baseUrl/${product.id}.json?auth=$_token");
+    final index = _items.indexWhere((prod) => prod.id == id);
+    if (index >= 0) {
+      final product = _items[index];
+      _items.remove(product);
+      notifyListeners();
 
-        if (response.statusCode >= 400) {
-          _items.insert(index, product);
-          notifyListeners();
-        }
-      }
+      final response = await http.delete("$_baseUrl/${product.id}.json?auth=$_token");
+
+      if (response.statusCode >= 400) {
+        _items.insert(index, product);
+        notifyListeners();
+        throw HttpException('Ocorreu um erro na exclusão do produto.');
+      } 
     }
   }
 }
+
+// bool _showFavoriteOnly = false;
+
+// void showFavoriteOnly() {
+//   _showFavoriteOnly = true;
+//   notifyListeners();
+
+// }
+// void showAll() {
+//   _showFavoriteOnly = false;
+//   notifyListeners();
+// }
