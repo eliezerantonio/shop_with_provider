@@ -40,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
             HomeScreen(),
             CartScreen(),
             OrderScreen(),
-            ProductScreen(),
+            ProductsScreen(),
           ],
         ),
       ),

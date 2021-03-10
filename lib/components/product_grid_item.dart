@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gerencimento_estado/providers/auth.dart';
 import 'package:gerencimento_estado/providers/cart.dart';
 import 'package:provider/provider.dart';
 import 'package:gerencimento_estado/helpers/app_routes.dart';
@@ -9,10 +10,11 @@ class ProductGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final Auth auth = Provider.of(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
-        child: GestureDetector(
+        child: GestureDetector( 
           onTap: () {
             Navigator.of(context)
                 .pushNamed(AppRoutes.PRODUCT_DETAIL, arguments: product);
@@ -27,7 +29,7 @@ class ProductGridItem extends StatelessWidget {
           leading: Consumer<Product>(
             builder: (context, product, _) => IconButton(
               onPressed: () {
-                product.toggleFavorite();
+                product.toggleFavorite(auth.token, auth.userID);
               },
               icon: Icon(
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,

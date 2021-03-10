@@ -6,6 +6,7 @@ import 'package:gerencimento_estado/exceptions/auth_exception.dart';
 import 'package:http/http.dart' as http;
 
 class Auth with ChangeNotifier {
+  String _userID;
   String _token;
   DateTime _expiryDate;
 
@@ -21,6 +22,10 @@ class Auth with ChangeNotifier {
     } else {
       return null;
     }
+  }
+
+  String get userID {
+    return isAuth ? _userID : null;
   }
 
   Future<void> _authenticate(
@@ -43,6 +48,7 @@ class Auth with ChangeNotifier {
       throw AuthException(responseBody['error']['message']);
     } else {
       _token = responseBody["idToken"];
+      _userID = responseBody["localId"];
       _expiryDate = DateTime.now().add(
         Duration(
           seconds: int.parse(
