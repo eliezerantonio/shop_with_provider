@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:gerencimento_estado/helpers/constants.dart';
 import 'package:http/http.dart' as http;
 
-
 class Product with ChangeNotifier {
   final String id;
   final String title;
@@ -26,16 +25,15 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavorite() async {
+  Future<void> toggleFavorite(String token, String userID) async {
     _toggleFavorite();
 
     try {
-      final url = '${Constants.BASE_API_URL}/products/$id.json';
-      final response = await http.patch(
+      final url =
+          '${Constants.BASE_API_URL}/userFavorites/$userID/$id.json?auth=$token';
+      final response = await http.put(
         url,
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }),
+        body: json.encode(isFavorite),
       );
 
       if (response.statusCode >= 400) {
