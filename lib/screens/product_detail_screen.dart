@@ -10,43 +10,54 @@ class ProductDetailScreen extends StatelessWidget {
     final Product proudct =
         ModalRoute.of(context).settings.arguments as Product;
     return Scaffold(
-        appBar: AppBar(
-          title: Text(proudct.title),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                height: 300,
-                width: double.infinity,
-                child: Image.network(
-                  proudct.imageUrl,
-                  fit: BoxFit.cover,
-                ),
+        // appBar: AppBar(
+        //   title: Text(proudct.title),
+        // ),
+        body: CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          expandedHeight: 300,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(
+              proudct.title,
+            ),
+            background: Hero(
+              tag: proudct.id,
+              child: Image.network(
+                proudct.imageUrl,
+                fit: BoxFit.cover,
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                "AOA ${proudct.price}",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 20,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                width: double.infinity,
-                child: Text(
-                  proudct.description,
-                  textAlign: TextAlign.center,
-                ),
-              )
-            ],
+            ),
           ),
-        ));
+          pinned: true,
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate([
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "AOA ${proudct.price}",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              child: Text(
+                proudct.description,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(
+              height: 800,
+            )
+          ]),
+        )
+      ],
+    ));
   }
 }

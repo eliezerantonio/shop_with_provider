@@ -19,12 +19,15 @@ class ProductGridItem extends StatelessWidget {
             Navigator.of(context)
                 .pushNamed(AppRoutes.PRODUCT_DETAIL, arguments: product);
           },
-          child: FadeInImage(
-            placeholder: AssetImage("assets/images/image.jpg"),
-            image: NetworkImage(
-              product.imageUrl,
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder: AssetImage("assets/images/image.jpg"),
+              image: NetworkImage(
+                product.imageUrl,
+              ),
+              fit: BoxFit.cover,
             ),
-            fit: BoxFit.cover,
           ),
         ),
         footer: GridTileBar(

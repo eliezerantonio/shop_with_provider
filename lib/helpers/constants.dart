@@ -1,3 +1,3 @@
 class Constants {
-  static const BASE_API_URL = 'https://flutter-cod3r.firebaseio.com';
+  static const BASE_API_URL = 'https://fluttercoder-15a98-default-rtdb.firebaseio.com';
 }
