@@ -12,11 +12,28 @@ class AuthCard extends StatefulWidget {
   _AuthCardState createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> {
+class _AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   GlobalKey<FormState> _formKey = GlobalKey();
   bool _isLoading = false;
   AuthMode _authMode = AuthMode.Login;
   final _passwordControler = TextEditingController();
+  AnimationController _controller;
+
+  Animation<Size> _heightAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _heightAnimation = Tween<Size>(
+            begin: Size(double.infinity, 329), end: Size(double.infinity, 400))
+        .animate(
+            CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
+
+    _heightAnimation.addListener(() => setState(() {}));
+  }
 
   Map<String, String> _authData = {'email': '', 'password': ''};
 
@@ -53,10 +70,12 @@ class _AuthCardState extends State<AuthCard> {
       setState(() {
         _authMode = AuthMode.Singup;
       });
+      _controller.forward();
     } else {
       setState(() {
         _authMode = AuthMode.Login;
       });
+      _controller.reverse();
     }
   }
 
@@ -81,6 +100,7 @@ class _AuthCardState extends State<AuthCard> {
   void dispose() {
     super.dispose();
     _passwordControler.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -94,7 +114,9 @@ class _AuthCardState extends State<AuthCard> {
       child: Container(
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16),
-        height: _authMode == AuthMode.Login ? 329 : 400,
+        //  height: _authMode == AuthMode.Login ? 329 : 400,
+        height: _heightAnimation.value.height,
+        constraints: BoxConstraints(minHeight: _heightAnimation.value.height),
         child: Form(
           key: _formKey,
           child: Column(
@@ -158,11 +180,12 @@ class _AuthCardState extends State<AuthCard> {
                       borderRadius: BorderRadius.circular(30)),
                   color: Theme.of(context).primaryColor,
                   textColor: Theme.of(context).primaryTextTheme.button.color,
-                  padding: EdgeInsets.symmetric(horizontal: 60, vertical: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 60, vertical: 14),
                   child: Text(
                       _authMode == AuthMode.Login ? "Entrar" : "Registrar"),
                   onPressed: _submit,
                 ),
+              Spacer(),
               FlatButton(
                 onPressed: _switchAuthMode,
                 child: Text(
