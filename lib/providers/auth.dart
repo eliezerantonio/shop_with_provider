@@ -7,7 +7,6 @@ import 'package:gerencimento_estado/data/store.dart';
 import 'package:gerencimento_estado/exceptions/auth_exception.dart';
 import 'package:http/http.dart' as http;
 
-
 class Auth with ChangeNotifier {
   String _userId;
   String _token;
@@ -35,7 +34,7 @@ class Auth with ChangeNotifier {
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
     final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyCLor9Ce1j8_t4fpCeA2IEHWv4aXISXw9g';
+        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=${Consts.TOKEN}';
 
     final response = await http.post(
       url,
@@ -80,18 +79,18 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> tryAutoLogin() async {
-    if(isAuth) {
+    if (isAuth) {
       return Future.value();
     }
 
     final userData = await Store.getMap('userData');
-    if(userData == null) {
+    if (userData == null) {
       return Future.value();
     }
 
     final expiryDate = DateTime.parse(userData["expiryDate"]);
 
-    if(expiryDate.isBefore(DateTime.now())) {
+    if (expiryDate.isBefore(DateTime.now())) {
       return Future.value();
     }
 
