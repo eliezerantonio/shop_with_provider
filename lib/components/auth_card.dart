@@ -20,19 +20,22 @@ class _AuthCardState extends State<AuthCard>
   final _passwordControler = TextEditingController();
   AnimationController _controller;
 
-  Animation<Size> _heightAnimation;
+  Animation<Offset> _slideAnimation;
+  Animation<double> _opacityAnimation;
 
   @override
   void initState() {
     super.initState();
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    _heightAnimation = Tween<Size>(
-            begin: Size(double.infinity, 329), end: Size(double.infinity, 400))
+    _slideAnimation = Tween<Offset>(begin: Offset(0, -1.5), end: Offset(0, 0))
         .animate(
             CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
 
-    // _heightAnimation.addListener(() => setState(() {}));
+    // _slideAnimation.addListener(() => setState(() {}));
+
+    _opacityAnimation = Tween(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
   }
 
   Map<String, String> _authData = {'email': '', 'password': ''};
@@ -107,21 +110,23 @@ class _AuthCardState extends State<AuthCard>
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Card(
-      elevation: 8.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: AnimatedBuilder(
-        animation: _heightAnimation,
-        builder: (context, ch)=> Container(
-          width: deviceSize.width * 0.75,
-          padding: EdgeInsets.all(16),
-          //  height: _authMode == AuthMode.Login ? 329 : 400,
-          height: _heightAnimation.value.height,
-          constraints: BoxConstraints(minHeight: _heightAnimation.value.height),
-          child: ch,
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
         ),
-        child:  Form(
+        child: AnimatedBuilder(
+          animation: _slideAnimation,
+          builder: (context, ch) => Container(
+            width: deviceSize.width * 0.75,
+            padding: EdgeInsets.all(16),
+            height: _authMode == AuthMode.Singup ?  400: 329  ,
+            // height: _slideAnimation.value.height,
+            constraints: BoxConstraints(
+              minHeight: _authMode == AuthMode.Singup ? 400: 329,
+            ),
+            child: ch,
+          ),
+          child: Form(
             key: _formKey,
             child: Column(
               children: [
@@ -158,24 +163,38 @@ class _AuthCardState extends State<AuthCard>
                   },
                   onSaved: (value) => _authData["password"] = value,
                 ),
-                if (_authMode == AuthMode.Singup)
-                  TextFormField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: "Confirmar senha",
-                      labelStyle: TextStyle(fontSize: 22),
+                AnimatedContainer(
+                  curve: Curves.easeIn,
+                  constraints: BoxConstraints(
+                      minHeight: _authMode == AuthMode.Singup ? 60 : 0,
+                      maxHeight: _authMode == AuthMode.Singup ? 120 : 0),
+                  duration: Duration(microseconds: 300),
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: TextFormField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: "Confirmar senha",
+                          labelStyle: TextStyle(fontSize: 22),
+                        ),
+                        keyboardType: TextInputType.text,
+                        validator: _authMode == AuthMode.Singup
+                            ? (value) {
+                                if (value != _passwordControler.text) {
+                                  return 'Senha nao confere';
+                                }
+                                return null;
+                              }
+                            : null,
+                      ),
                     ),
-                    keyboardType: TextInputType.text,
-                    validator: _authMode == AuthMode.Singup
-                        ? (value) {
-                            if (value != _passwordControler.text) {
-                              return 'Senha nao confere';
-                            }
-                            return null;
-                          }
-                        : null,
                   ),
-                Spacer(),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 if (_isLoading)
                   CircularProgressIndicator()
                 else
@@ -189,7 +208,6 @@ class _AuthCardState extends State<AuthCard>
                         _authMode == AuthMode.Login ? "Entrar" : "Registrar"),
                     onPressed: _submit,
                   ),
-                Spacer(),
                 FlatButton(
                   onPressed: _switchAuthMode,
                   child: Text(
@@ -202,9 +220,6 @@ class _AuthCardState extends State<AuthCard>
               ],
             ),
           ),
-        
-        )
-      );
-    
+        ));
   }
 }
